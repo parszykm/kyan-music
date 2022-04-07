@@ -1,0 +1,23 @@
+.track{
+    /* display:flex;
+    justify-content:space-between; */
+    display:grid;
+    grid-template-columns: 40px repeat(2,1fr) 40px 1fr;
+    column-gap: 2rem ;
+    padding: 0.8rem 1.5rem; 
+    width:100%;
+    background:var(--background-white);
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    align-items:center;
+    
+
+}
+.track div {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left; 
+    color: var(--main-color)
+}

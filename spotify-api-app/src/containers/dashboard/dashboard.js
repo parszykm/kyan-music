@@ -28,7 +28,7 @@ const Dashboard = ({code}) => {
       axios.post('http://localhost:3001/search',{accessToken,search_value: e})
       .then(data => {
         setTracks(data.data)
-        console.log(tracks)
+        console.log(data.data)
       })
       .catch(err => console.error(err))
 

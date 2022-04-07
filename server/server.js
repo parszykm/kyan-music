@@ -1,4 +1,4 @@
-require('dotenv').config()
+const dotenv = require('dotenv').config()
 const express= require('express');
 const cors = require('cors');
 const app = express();
@@ -102,8 +102,10 @@ app.post('/search', (req,res) => {
             results.push({
                 artist: item.artists[0].name,
                 key: item.id,
+                uri:item.uri,
                 image: item.album.images[0].url,
                 track_name: item.name,
+                album_name: item.album.name
 
 
             })
