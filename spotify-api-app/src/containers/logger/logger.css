@@ -1,0 +1,75 @@
+.logger {
+  position: static;
+  height: 100vh;
+  background-image: url("../../assets/background-main.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.background-vector img {
+  height: 100vh;
+}
+.logger-logo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 5rem;
+}
+.logger-logo img {
+  margin-right: 1rem;
+  height: 8vh;
+}
+.logger-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logger-container-slogan {
+  font-family: var(--font-family);
+  margin-right: 2rem;
+  width: 60vw;
+}
+.logger-container-slogan h1 {
+  font-size: 50px;
+  line-height: 67px;
+}
+.logger-container-slogan-btn {
+  margin: 2rem 0;
+  padding: 0.8rem 1rem;
+  border: 1px solid #fff;
+  border-radius: 15px;
+}
+.logger-container-slogan-btn a {
+  text-decoration: none;
+  color: #fff;
+}
+.logger-container-img {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logger-container-img img {
+  width: 70%;
+  height: auto;
+}
+
+.logger-container h1 {
+  color: #fff;
+}
+
+@media screen and (max-width: 750px) {
+  .background-vector {
+    content: url("../../assets/undraw_accept_terms_re_lj38p-mobile.svg");
+  }
+  .logger-container {
+    flex-direction: column;
+  }
+  .logger-container-slogan {
+    margin: 3rem 0;
+  }
+  .logger-container-slogan h1 {
+    font-size: 40px;
+  }
+}
