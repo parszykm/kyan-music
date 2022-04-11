@@ -6,7 +6,7 @@ import {useState,useEffect} from 'react'
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom'
 import Home from '../home/home'
 import Trends from '../trends/Trends'
-import Player from '../../components/Player/Player'
+import PlayerSDK from'../../components/PlayerSDK/PlayerSDK'
 import {BiArrowBack,BiSearch} from 'react-icons/bi'
 import axios from 'axios'
 const Dashboard = ({code}) => {
@@ -34,6 +34,12 @@ const Dashboard = ({code}) => {
       .catch(err => console.error(err))
 
     }
+    const [activeTrack, setActiveTrack] = useState()
+    const changeActive = (track) =>{
+      setActiveTrack(track)
+      console.log(track)
+    
+    }
     
   return (
   <Router>
@@ -50,14 +56,18 @@ const Dashboard = ({code}) => {
           <BiSearch/>
           <input type="search" placeholder="Search for tracks..." onKeyUp={e => (e.key === 'Enter' ? searchTracks(e.target.value) : () => {} )}></input>
         </div>
-        
+
       </div>
     
       <Routes>
-        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken}/>}></Route>
+        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} activeTrack={activeTrack}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
       </Routes>
-      {/* <Player accessToken={accessToken} uri={}/> */}
+      <div className="dashboard__content-player">
+        <PlayerSDK token={accessToken} uri={activeTrack}/>
+      </div>
+      
+      
       
     
     </div>

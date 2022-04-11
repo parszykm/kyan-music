@@ -97,7 +97,7 @@ app.post('/search', (req,res) => {
         }
     }).then(data => {
         const results =[]
-        // console.log(data.data.tracks)
+        // console.log(data.data.tracks.items[0].album)
         data.data.tracks.items.forEach((item) => {
             results.push({
                 artist: item.artists[0].name,
@@ -105,7 +105,7 @@ app.post('/search', (req,res) => {
                 uri:item.uri,
                 image: item.album.images[0].url,
                 track_name: item.name,
-                album_name: item.album.name
+                album_name: item.album.name,
 
 
             })
@@ -115,5 +115,24 @@ app.post('/search', (req,res) => {
     })
     res.json(results)
 }).catch(err => {console.log(err), res.sendStatus(400)})
+})
+app.post('/play', (req, res) => {
+    const uri=req.body.uri
+    const device_id=req.body.device_id
+    const access_token=req.body.accessToken
+    console.log(uri)
+    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":[`${uri}`]},
+    {
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+access_token
+        }
+    }
+
+    ).then(data => res.sendStatus(200))
+    .catch(err => {
+        console.error(err)
+        res.sendStatus(400)
+    })
 })
 app.listen(3001)
