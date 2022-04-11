@@ -6,6 +6,7 @@ import {useState,useEffect} from 'react'
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom'
 import Home from '../home/home'
 import Trends from '../trends/Trends'
+import Player from '../../components/Player/Player'
 import {BiArrowBack,BiSearch} from 'react-icons/bi'
 import axios from 'axios'
 const Dashboard = ({code}) => {
@@ -33,6 +34,7 @@ const Dashboard = ({code}) => {
       .catch(err => console.error(err))
 
     }
+    
   return (
   <Router>
     <div className="dashboard">
@@ -52,9 +54,10 @@ const Dashboard = ({code}) => {
       </div>
     
       <Routes>
-        <Route path="/" element={<Home tracks={tracks}/>}></Route>
+        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
       </Routes>
+      {/* <Player accessToken={accessToken} uri={}/> */}
       
     
     </div>

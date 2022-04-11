@@ -4,20 +4,28 @@
     display:grid;
     grid-template-columns: 40px repeat(2,1fr) 40px 1fr;
     column-gap: 2rem ;
-    padding: 0.8rem 1.5rem; 
+    padding: 1rem 1.5rem; 
     width:100%;
-    background:var(--background-white);
+    background:transparent;
     margin-bottom: 0.5rem;
     border-radius: 12px;
     align-items:center;
+
     
 
 }
 .track div {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left; 
     color: var(--main-color)
+}
+.track.active{
+    background-color: var(--background-white);
+    -webkit-box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
+    -moz-box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
+    box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
 }
