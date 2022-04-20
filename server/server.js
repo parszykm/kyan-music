@@ -135,4 +135,58 @@ app.post('/play', (req, res) => {
         res.sendStatus(400)
     })
 })
+app.post('/play', (req, res) => {
+    const uri=req.body.uri
+    const device_id=req.body.device_id
+    const access_token=req.body.accessToken
+    console.log(uri)
+    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":[`${uri}`]},
+    {
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+access_token
+        }
+    }
+
+    ).then(data => res.sendStatus(200))
+    .catch(err => {
+        console.log(err.json())
+        res.sendStatus(400)
+        // res.json(err)
+    })
+})
+app.post('/stop', (req, res) => {
+    const device_id=req.body.device_id
+    const access_token=req.body.accessToken
+    axios.put(`https://api.spotify.com/v1/me/player/pause?device_id=${device_id}`,{},
+    {
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+access_token
+        }
+    }
+
+    ).then(data => res.sendStatus(200))
+    .catch(err => {
+        console.error(err)
+        res.sendStatus(400)
+    })
+})
+app.post('/resume', (req, res) => {
+    const device_id=req.body.device_id
+    const access_token=req.body.accessToken
+    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{},
+    {
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+access_token
+        }
+    }
+
+    ).then(data => res.sendStatus(200))
+    .catch(err => {
+        console.error(err)
+        res.sendStatus(400)
+    })
+})
 app.listen(3001)

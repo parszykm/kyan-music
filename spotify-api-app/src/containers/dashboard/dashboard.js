@@ -40,6 +40,38 @@ const Dashboard = ({code}) => {
       console.log(track)
     
     }
+    const [player, setPlayer] = useState(undefined);
+    const [deviceID, setDeviceID] = useState(undefined);
+    useEffect(() => {
+      if(!accessToken) return
+      console.log(accessToken)
+    
+      const script = document.createElement("script");
+      script.src = "https://sdk.scdn.co/spotify-player.js";
+      script.async = true;
+      document.body.appendChild(script);
+  
+      window.onSpotifyWebPlaybackSDKReady = () => {
+  
+          const player = new window.Spotify.Player({
+              name: 'Kyan Music',
+              getOAuthToken: cb => { cb(accessToken); },
+              volume: 0.5
+          });
+  
+          setPlayer(player);
+          player.connect();
+          player.addListener('ready', ({ device_id }) => {
+              console.log('Ready with Device ID', device_id);
+              setDeviceID(device_id);
+          });
+  
+          player.addListener('not_ready', ({ device_id }) => {
+              console.log('Device ID has gone offline', device_id);
+          });
+  
+      };
+  }, [accessToken]);
     
   return (
   <Router>
@@ -64,7 +96,7 @@ const Dashboard = ({code}) => {
         <Route path="/trends" element={<Trends/>}></Route>
       </Routes>
       <div className="dashboard__content-player">
-        <PlayerSDK token={accessToken} uri={activeTrack}/>
+        <PlayerSDK token={accessToken} uri={activeTrack} player={player} device_id={deviceID}/>
       </div>
       
       
