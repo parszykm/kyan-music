@@ -47,7 +47,7 @@ const Sidebar = (props) => {
         <div className="sidebar__main-list">
             <p>Your Collection</p>
             <ul className="sidebar__ul">
-                <li><span><RiHeart2Line/> <p>Favorite Songs</p></span></li>
+                <Link to="/favorites"><li><span><RiHeart2Line/> <p>Favorite Songs</p></span></li></Link>
                 <li><span><MdOutlineSupervisorAccount/> <p>Artists</p></span></li>
 
             </ul>

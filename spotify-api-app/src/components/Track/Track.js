@@ -6,6 +6,7 @@ const Track = (props) => {
   const [state,setState]=useState(props.state)
   const handlePlay = (e) =>{
     props.isActive(props.uri)
+    props.isActiveId(props.track_id)
     
   }
 

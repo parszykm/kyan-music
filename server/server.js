@@ -116,6 +116,25 @@ app.post('/search', (req,res) => {
     res.json(results)
 }).catch(err => {console.log(err), res.sendStatus(400)})
 })
+// app.post('/play', (req, res) => {
+//     const uri=req.body.uri
+//     const device_id=req.body.device_id
+//     const access_token=req.body.accessToken
+//     console.log(uri)
+//     axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":[`${uri}`]},
+//     {
+//         headers:{
+//             'Content-Type': 'application/json',
+//             'Authorization': 'Bearer '+access_token
+//         }
+//     }
+
+//     ).then(data => res.sendStatus(200))
+//     .catch(err => {
+//         console.error(err)
+//         res.sendStatus(400)
+//     })
+// })
 app.post('/play', (req, res) => {
     const uri=req.body.uri
     const device_id=req.body.device_id
@@ -131,26 +150,7 @@ app.post('/play', (req, res) => {
 
     ).then(data => res.sendStatus(200))
     .catch(err => {
-        console.error(err)
-        res.sendStatus(400)
-    })
-})
-app.post('/play', (req, res) => {
-    const uri=req.body.uri
-    const device_id=req.body.device_id
-    const access_token=req.body.accessToken
-    console.log(uri)
-    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":[`${uri}`]},
-    {
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+access_token
-        }
-    }
-
-    ).then(data => res.sendStatus(200))
-    .catch(err => {
-        console.log(err.json())
+        console.log(err)
         res.sendStatus(400)
         // res.json(err)
     })
@@ -186,6 +186,51 @@ app.post('/resume', (req, res) => {
     ).then(data => res.sendStatus(200))
     .catch(err => {
         console.error(err)
+        res.sendStatus(400)
+    })
+})
+app.post('/add', (req,res) => {
+    const accessToken = req.body.accessToken
+    const id = req.body.id
+    axios.put(`https://api.spotify.com/v1/me/tracks?ids=${id}`,{"ids": [id]},
+    {
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+accessToken
+        }
+    }
+    ).then(data =>  console.log(data)).catch(err => {
+        console.log(err)
+        res.sendStatus(400)
+    })
+})
+app.post('/favorites', (req, res) => {
+    const accessToken = req.body.accessToken
+    axios.get('https://api.spotify.com/v1/me/tracks',{ 
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+    }
+    }).then(data =>{
+        const results =[]
+        data.data.items.forEach((item) => {
+            results.push({
+                artist: item.track.artists[0].name,
+                key: item.track.id,
+                uri:item.track.uri,
+                image: item.track.album.images[0].url,
+                track_name: item.track.name,
+                album_name: item.track.album.name,
+
+
+            })
+        
+
+
+    })
+    res.json(results)
+    }).catch(err =>{
+        console.log(err)
         res.sendStatus(400)
     })
 })

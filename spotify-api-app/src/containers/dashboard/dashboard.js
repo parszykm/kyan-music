@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route,Routes } from 'react-router-dom'
 import Home from '../home/home'
 import Trends from '../trends/Trends'
 import PlayerSDK from'../../components/PlayerSDK/PlayerSDK'
+import Favs from '../../containers/favs/Favs'
 import {BiArrowBack,BiSearch} from 'react-icons/bi'
 import axios from 'axios'
 const Dashboard = ({code}) => {
@@ -14,6 +15,7 @@ const Dashboard = ({code}) => {
     const [profilePic,setProfilePic] =useState()
     const [profileName,setProfileName] =useState()
     const [tracks, setTracks] =useState([])
+    const [favorites, setFavorites] = useState()
     useEffect(() => {
       if(!accessToken) return
       axios.post('http://localhost:3001/profile', {accessToken,})
@@ -23,6 +25,14 @@ const Dashboard = ({code}) => {
         
       }).catch(err => {console.error(err)})
       console.log(profileName)
+
+      
+  
+      axios.post('http://localhost:3001/favorites',{accessToken: accessToken}).then((res) => {
+      setFavorites(res.data)
+      console.log('favs init')
+    // console.log(res.data)
+    }) 
     },[accessToken])
     const searchTracks = (e) =>{
 
@@ -35,11 +45,14 @@ const Dashboard = ({code}) => {
 
     }
     const [activeTrack, setActiveTrack] = useState()
-    const changeActive = (track) =>{
-      setActiveTrack(track)
-      console.log(track)
-    
-    }
+    const [activeTrackId, setActiveTrackId] = useState()
+      const changeActive = (track) =>{
+        setActiveTrack(track)
+        
+        console.log(track)
+      
+      }
+
     const [player, setPlayer] = useState(undefined);
     const [deviceID, setDeviceID] = useState(undefined);
     useEffect(() => {
@@ -72,6 +85,8 @@ const Dashboard = ({code}) => {
   
       };
   }, [accessToken]);
+ 
+  
     
   return (
   <Router>
@@ -90,13 +105,16 @@ const Dashboard = ({code}) => {
         </div>
 
       </div>
-    
-      <Routes>
-        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} activeTrack={activeTrack}/>}></Route>
+      <div className="dashboard__dynamic-content">
+              <Routes>
+        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
+        <Route path="/favorites" element={<Favs favorites={favorites} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack}/>}></Route>
       </Routes>
+      </div>
+
       <div className="dashboard__content-player">
-        <PlayerSDK token={accessToken} uri={activeTrack} player={player} device_id={deviceID}/>
+        <PlayerSDK token={accessToken} uri={activeTrack} id={activeTrackId} player={player} device_id={deviceID}/>
       </div>
       
       

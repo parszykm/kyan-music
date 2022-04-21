@@ -107,8 +107,6 @@ const PlayerSDK = (props) => {
     currentPosition = 0,
     endPosition=0
     let progressBar2 = document.querySelector('.progress_bar')
-    console.log(refHead.current)
-    console.log(refBody.current)
     const getPosition = (e) => {
         // console.log(e)
         var rect = e.currentTarget.getBoundingClientRect(),
@@ -162,7 +160,9 @@ const PlayerSDK = (props) => {
     
     // refBody.current.addEventListener('mousemove',touchMove)
     // playerCont.addEventListener('mouseleave',touchEnd)
-
+    const addToFav = () =>{
+        axios.post('http://localhost:3001/add',{accessToken: accessToken, id: props.id})
+    }
   return (
     <>
         <div className="player" ref={refBody} >
@@ -175,7 +175,7 @@ const PlayerSDK = (props) => {
                     <MdOutlineOpenInFull size='20' style={{color:'var(--font-gray)'}}/>
                 </div>
                 <div className="player__buttons-actions-btn">
-                    <RiHeart2Line size='20' style={{color:'var(--font-gray)'}}/>
+                    <RiHeart2Line size='20' style={{color:'var(--font-gray)'}} onClick={addToFav}/>
                 </div>
 
             </div>
