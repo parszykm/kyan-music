@@ -8,3 +8,29 @@
     overflow:hidden;
     overflow-y: scroll;
 }
+.favs::-webkit-scrollbar {
+    width: 10px;
+  }
+   
+  /* Handle */
+.favs::-webkit-scrollbar-thumb {
+    background: var(--main-color); 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+.favs::-webkit-scrollbar-thumb:hover {
+    background: rgb(81, 81, 81); 
+  }
+ .favs h1{
+     color: var(--main-color);
+     font-size: 30px;
+     font-family: var(--font-family);
+
+ }
+ .favs__heading{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+ }

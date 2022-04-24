@@ -2,12 +2,10 @@ import React from 'react'
 import {useEffect,useState } from 'react'
 import axios from 'axios'
 const useAuth = (code) => {
-    console.log('siema')
     const [accessToken, setAccessToken] =useState()
     const [refreshToken, setRefreshToken] =useState()
     const [expiresIn, setExpiresIn] =useState()
-    useEffect(() => {
-      
+    useEffect(() => { 
         axios.post('http://localhost:3001/token',{code,})
         .then(res => {
           setAccessToken(res.data.accessData)
@@ -21,10 +19,10 @@ const useAuth = (code) => {
         
         
     },[code])
-    console.log(expiresIn)
     useEffect(() => {
-      if(!refreshToken) return
+      if(!accessToken) return
       const interval = setInterval(() =>{
+        console.log('Refreshed\n')
         axios.post('http://localhost:3001/refresh',{refreshToken})
         .then(res => {
           setAccessToken(res.data.accessData)
@@ -34,7 +32,7 @@ const useAuth = (code) => {
         })
       },(expiresIn-60)*1000)
       return () => clearInterval(interval)
-    },[code])
+    },[accessToken])
   return accessToken
 }
 

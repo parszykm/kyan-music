@@ -133,7 +133,8 @@ hr{
     background: var(--main-color);
     border-radius: 50%;
     cursor:pointer;
-    color:var(--background-white)
+    color:var(--background-white);
+    transform: rotate(180deg);
 
 }
 .sidebar.closed{
@@ -162,4 +163,7 @@ hr{
 }
 .sidebar.closed #profile_swipe{
     display:none
+}
+.sidebar.closed #menu-toggle2{
+    transform: rotate(360deg);
 }

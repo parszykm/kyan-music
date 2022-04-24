@@ -6,6 +6,13 @@ const Track = (props) => {
   const [state,setState]=useState(props.state)
   const handlePlay = (e) =>{
     props.isActive(props.uri)
+    props.isActive({
+      name: props.name,
+      artist: props.artist,
+      uri: props.uri,
+      image_url: props.image,
+      id: props.track_id
+    })
     props.isActiveId(props.track_id)
     
   }

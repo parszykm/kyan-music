@@ -2,7 +2,8 @@ import React from 'react'
 import './dashboard.css'
 import useAuth from '../../useAuth'
 import Sidebar from '../Sidebar/Sidebar'
-import {useState,useEffect} from 'react'
+import Aside from '../Aside/Aside'
+import {useState,useEffect,useRef} from 'react'
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom'
 import Home from '../home/home'
 import Trends from '../trends/Trends'
@@ -15,7 +16,7 @@ const Dashboard = ({code}) => {
     const [profilePic,setProfilePic] =useState()
     const [profileName,setProfileName] =useState()
     const [tracks, setTracks] =useState([])
-    const [favorites, setFavorites] = useState()
+    // const [favorites, setFavorites] = useState()
     useEffect(() => {
       if(!accessToken) return
       axios.post('http://localhost:3001/profile', {accessToken,})
@@ -28,12 +29,14 @@ const Dashboard = ({code}) => {
 
       
   
-      axios.post('http://localhost:3001/favorites',{accessToken: accessToken}).then((res) => {
-      setFavorites(res.data)
-      console.log('favs init')
-    // console.log(res.data)
-    }) 
+    //   axios.post('http://localhost:3001/favorites',{accessToken: accessToken}).then((res) => {
+    //   setFavorites(res.data)
+    //   console.log('favs init')
+    // // console.log(res.data)
+    // }) 
     },[accessToken])
+  
+
     const searchTracks = (e) =>{
 
       axios.post('http://localhost:3001/search',{accessToken,search_value: e})
@@ -44,7 +47,7 @@ const Dashboard = ({code}) => {
       .catch(err => console.error(err))
 
     }
-    const [activeTrack, setActiveTrack] = useState()
+    const [activeTrack, setActiveTrack] = useState({})
     const [activeTrackId, setActiveTrackId] = useState()
       const changeActive = (track) =>{
         setActiveTrack(track)
@@ -57,7 +60,7 @@ const Dashboard = ({code}) => {
     const [deviceID, setDeviceID] = useState(undefined);
     useEffect(() => {
       if(!accessToken) return
-      console.log(accessToken)
+      console.log('ACCESS TOKEN',accessToken)
     
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -107,14 +110,14 @@ const Dashboard = ({code}) => {
       </div>
       <div className="dashboard__dynamic-content">
               <Routes>
-        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack}/>}></Route>
+        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
-        <Route path="/favorites" element={<Favs favorites={favorites} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack}/>}></Route>
+        <Route path="/favorites" element={<Favs accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
       </Routes>
       </div>
 
       <div className="dashboard__content-player">
-        <PlayerSDK token={accessToken} uri={activeTrack} id={activeTrackId} player={player} device_id={deviceID}/>
+        <PlayerSDK token={accessToken} uri={activeTrack.uri} id={activeTrackId} player={player} device_id={deviceID}/>
       </div>
       
       
@@ -125,7 +128,7 @@ const Dashboard = ({code}) => {
           <div>{code}<br/></div>
     <div><p>token <br/></p>{accessToken}</div>
     </div> */}
-
+    <Aside artist={activeTrack.artist} name={activeTrack.name} image={activeTrack.image_url}/>
     </div>
     </Router>
   )

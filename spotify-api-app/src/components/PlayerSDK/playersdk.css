@@ -9,7 +9,12 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
+    -webkit-box-shadow: 0px 0px 29px -22px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 0px 0px 29px -22px rgba(66, 68, 90, 1);
+    box-shadow: 0px 0px 29px -22px rgba(66, 68, 90, 1);
+
 }
+
 .player__buttons{
     width: 100%;
     display: grid;
@@ -28,14 +33,16 @@
 }
 .player__buttons div *{
     margin: 0 0.4rem;
+
 }
 .progress_bar{
     height:3px;
-    background: black;
+    background:var(--main-color);
     border-radius: 5px;
     width:0;
     max-width: 100%;
-    transition: all 0.03s;
+    /* transition: all 0.03s; */
+    display: flex;align-items: center;
     position: relative;
 }
 .player__buttons-main *{
@@ -57,12 +64,17 @@
     width: 8px;
     height: 8px;
     background: #fff;
-    border: 2px solid black;
+    border: 2px solid var(--main-color);
     position: absolute;
     top: 50%;
     right:-2px;
     transform: translateY(-50%);
+    cursor: pointer;
 
+
+}
+.grabbing{
+    cursor: grabbing;
 }
 .whole_bar{
     width:100%;
@@ -76,7 +88,7 @@
 .stop_btn{
     background: var(--main-color);
     text-decoration: none;
-    color: var(--background-white);
+    color: var(--background-white) !important;
     border:none;
     outline: none;
     border-radius: 50%;
@@ -85,6 +97,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+   
+}
+.scale_on{
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+.scale_on:hover{
+    transform: scale(1.1);
+}
+.next_btn{
+    color: var(--main-color);
 }
 .player__buttons-actions-btn{
     background: var(--background-gray);

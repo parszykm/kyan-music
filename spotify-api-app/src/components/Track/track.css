@@ -10,9 +10,7 @@
     margin-bottom: 0.5rem;
     border-radius: 12px;
     align-items:center;
-
-    
-
+    cursor:pointer;   
 }
 .track div {
     font-size: 13px;
@@ -28,4 +26,8 @@
     -webkit-box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
     -moz-box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
     box-shadow: -2px 26px 57px -14px rgba(224, 224, 224, 1);
+}
+.track:hover{
+    background-color: var(--background-gray);
+    filter: brightness(104%);
 }

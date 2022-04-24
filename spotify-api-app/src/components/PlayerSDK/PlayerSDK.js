@@ -19,9 +19,7 @@ const PlayerSDK = (props) => {
     let isDragging = false
     const progressBar = document.querySelector('.progress_bar')
     const accessToken = props.token
-    // console.log(player)
 
-    // progressBar.addEventListener(click, (e) => {console.log(e)})
     function myStopFunction() {
         clearInterval(myInterval);
       }
@@ -30,31 +28,14 @@ const PlayerSDK = (props) => {
         player.addListener('player_state_changed',(e) => {
         setIsPaused(e.paused)
     })
+    
     },[player])
-    const seekToPosition = (e) => {
-        if(!player) return
-        // console.log('posiiton',e.target.offsetWidth)
-        player.getCurrentState().then(state => {
-            if (!state) {
-            console.error('User is not playing music through the Web Playback SDK');
-            return;
-            }
-            const barLength=document.querySelector('.whole_bar').offsetWidth
-            // console.log('percents ',e,e.nativeEvent.offsetX, e.target.offsetWidth, e.clientX/e.target.offsetWidth*state.duration)
-            player.seek(e.nativeEvent.offsetX/barLength*state.duration) 
-            setIsPaused(true) 
-            
-            
-        })
-        
-
-    }
     useEffect(() => {
-        // console.log(player,isPaused)
+
         if(!player || player == null) return
         if(isPaused) {
         myStopFunction()
-        // console.log('interval stopped')
+ 
         return
         }
         
@@ -64,7 +45,7 @@ const PlayerSDK = (props) => {
             console.error('User is not playing music through the Web Playback SDK');
             return;
             }
-            // console.log(state.position)
+          
             
             if(!isDragging)
             {
@@ -83,7 +64,6 @@ const PlayerSDK = (props) => {
     
 
     useEffect(() => {
-        // console.log(props.uri, 'URI CHANGED xddd')
         axios.post('http://localhost:3001/play',{uri: props.uri, device_id:deviceID, accessToken:accessToken})
     },[props.uri])
     const stopTrack = () =>{
@@ -102,54 +82,63 @@ const PlayerSDK = (props) => {
     const refBar = useRef()
     let barLength = 1,
     animationID = 0
-    
+    let padding = 0
     let startPosition = 0,
     currentPosition = 0,
     endPosition=0
+   
     let progressBar2 = document.querySelector('.progress_bar')
+    let rect = {left: 0}
     const getPosition = (e) => {
-        // console.log(e)
-        var rect = e.currentTarget.getBoundingClientRect(),
-        offsetX = e.clientX - rect.left
+        var offsetX = e.clientX - rect.left
+    
         return offsetX
     }
+
     const touchStart =  (e) =>{
         barLength = document.querySelector('.whole_bar').offsetWidth
         progressBar2 = document.querySelector('.progress_bar')
+        rect = document.querySelector('.whole_bar').getBoundingClientRect()
         isDragging = true
+        progressBar2.style= 'height: 5px; transform: translateY(-50%);';
+        refHead.current.style= 'width: 10px; height: 10px; transform: translateY(-50%);'
+        refBody.current.classList.toggle('grabbing');
+      
         startPosition =  getPosition(e)
-        console.log('start position ',startPosition)
         animationID = requestAnimationFrame(animation)
     }
     const touchMove = (e) =>{
         if(!isDragging) return
         currentPosition =  getPosition(e)
-        // console.log(currentPosition)
-        // progressBar.style= `width: ${currentPosition/barLength*100}%`
     }
     const touchEnd = (e) =>{
         if(!isDragging) return
-        isDragging = false
+        progressBar2.style= 'height: 3px;';
+        refHead.current.style= 'width: 8px; height: 8px;'
+        refBody.current.classList.toggle('grabbing');
         cancelAnimationFrame(animationID)
-        endPosition = getPosition(e)
-        console.log('end ',endPosition)
+        endPosition = currentPosition
+       
         player.getCurrentState().then(state => {
                     if (!state) {
                     console.error('User is not playing music through the Web Playback SDK');
                     return;
                     }
-                    player.seek(endPosition/barLength*state.duration) 
+                   
+                    player.seek(currentPosition/barLength*state.duration) 
+                    // progressBar2.style.width= `${currentPosition/barLength*100}%`
                     setIsPaused(true) 
                     
                     
                 })
+        isDragging = false
     }
     function animation() {
         changeWidth()
         if (isDragging) requestAnimationFrame(animation)
       }
     function changeWidth() {
-        progressBar2.style= `width: ${currentPosition/barLength*100}%`
+        progressBar2.style.width= `${(currentPosition)/barLength*100}%`
     }
     useEffect(() => {
         if(!refBody.current || !refHead.current || !player) return
@@ -172,19 +161,19 @@ const PlayerSDK = (props) => {
         <div className="player__buttons">
             <div className="player__buttons-actions">
                 <div className="player__buttons-actions-btn">
-                    <MdOutlineOpenInFull size='20' style={{color:'var(--font-gray)'}}/>
+                    <MdOutlineOpenInFull size='20' className="scale_on" style={{color:'var(--font-gray)'}}/>
                 </div>
                 <div className="player__buttons-actions-btn">
-                    <RiHeart2Line size='20' style={{color:'var(--font-gray)'}} onClick={addToFav}/>
+                    <RiHeart2Line size='20' className="scale_on" style={{color:'var(--font-gray)'}} onClick={addToFav}/>
                 </div>
 
             </div>
             <div className="player__buttons-main">
-            <TiArrowRepeat size='18' style={{color:'var(--font-gray)'}}/>
-            <BsFillSkipBackwardFill size='20'/>
-            <button type="button" className="stop_btn" onClick={isPaused ? resumeTrack :stopTrack }> {isPaused? <VscDebugStart size='25'/> :<BsPauseFill size='25'/> }</button>
-            <div id='rotate_icon'><BsFillSkipBackwardFill size='20'/> </div>
-            <TiArrowShuffle size ='18' style={{color:'var(--font-gray)'}}/>
+            <TiArrowRepeat size='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
+            <BsFillSkipBackwardFill className="next_btn scale_on" size='20'/>
+            <button type="button" className="stop_btn scale_on" onClick={isPaused ? resumeTrack :stopTrack }> {isPaused? <VscDebugStart size='25'/> :<BsPauseFill size='25'/> }</button>
+            <div id='rotate_icon'><BsFillSkipBackwardFill size='20' className="next_btn scale_on"/> </div>
+            <TiArrowShuffle size ='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
             </div>
             <div className="player__buttons-volume">
             <BiVolumeFull size='20' style={{color:'var(--font-gray)'}}/>
@@ -192,7 +181,8 @@ const PlayerSDK = (props) => {
             </div>
         </div>
         
-            <div className="whole_bar" onClick={seekToPosition}>
+            <div className="whole_bar" 
+            >
             <div className="progress_bar" ref ={refBar}>
                 <div className="progress_bar-head" ref={refHead}/>
                 </div>
