@@ -205,14 +205,19 @@ app.post('/add', (req,res) => {
     })
 })
 app.post('/favorites', (req, res) => {
+    const results =[]
     const accessToken = req.body.accessToken
-    axios.get('https://api.spotify.com/v1/me/tracks',{ 
+    axios.get('https://api.spotify.com/v1/me/tracks?limit=50',{ 
         headers: {
             'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json'
     }
-    }).then(data =>{
-        const results =[]
+    }).then(async (data) =>{
+        
+        console.log(data.data.items.length)
+        var offset = data.data.items.length
+        var total = data.data.total
+
         data.data.items.forEach((item) => {
             results.push({
                 artist: item.track.artists[0].name,
@@ -227,9 +232,36 @@ app.post('/favorites', (req, res) => {
         
 
 
+    })      
+    while(offset < total)
+    {
+      
+        console.log(offset,total)
+        await axios.get(`https://api.spotify.com/v1/me/tracks?limit=50&offset=${offset}`,{ 
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+        }
+        }).then(data_next =>{  
+            data_next.data.items.forEach((item) => {
+                // console.log(item.track.name)
+                results.push({
+                    artist: item.track.artists[0].name,
+                    key: item.track.id,
+                    uri:item.track.uri,
+                    image: item.track.album.images[0].url ? item.track.album.images[0].url : null,
+                    track_name: item.track.name,
+                    album_name: item.track.album.name,
+    
+    
+                })
+        }) 
     })
+    offset += 50
+    }
     res.json(results)
-    }).catch(err =>{
+    })
+    .catch(err =>{
         console.log(err)
         res.sendStatus(400)
     })
