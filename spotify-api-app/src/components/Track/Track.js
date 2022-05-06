@@ -5,13 +5,13 @@ import {BiVolumeFull} from 'react-icons/bi'
 const Track = (props) => {
   const [state,setState]=useState(props.state)
   const handlePlay = (e) =>{
-    props.isActive(props.uri)
     props.isActive({
-      name: props.name,
+      track_name: props.name,
       artist: props.artist,
       uri: props.uri,
-      image_url: props.image,
-      id: props.track_id
+      image: props.image,
+      id: props.track_id,
+      offset: props.id,
     })
     props.isActiveId(props.track_id)
     

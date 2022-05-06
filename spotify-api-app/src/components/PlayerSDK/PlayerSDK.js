@@ -29,12 +29,6 @@ const PlayerSDK = (props) => {
         player.addListener('player_state_changed',(e) => {
         setIsPaused(e.paused)
         })
-    // player.getVolume().then(volume => {
-    //     let volume_percentage = volume * 100;
-    //     console.log(`The volume of the player is ${volume_percentage}%`);
-    //     refVolumeBar.current.style.width= `${volume_percentage}%`
-
-    //   }).catch(() => {console.log('Catched')})
     
     },[player])
     useEffect(() => {
@@ -71,7 +65,7 @@ const PlayerSDK = (props) => {
     
 
     useEffect(() => {
-        axios.post('http://localhost:3001/play',{uri: props.uri, device_id:deviceID, accessToken:accessToken}).then(() => {
+        axios.post('http://localhost:3001/play',{uri: props.tracksUris, activeOffset: props.activeOffset, device_id:deviceID, accessToken:accessToken}).then(() => {
             player.getVolume().then(volume => {
                 let volume_percentage = volume * 100;
                 console.log(`The volume of the player is ${volume_percentage}%`);
@@ -80,6 +74,8 @@ const PlayerSDK = (props) => {
               })
         })
     },[props.uri])
+    const [activeOffset,setActiveOffset] = useState(props.activeOffset)
+    const tracks = props.tracks
     const stopTrack = () =>{
         player.pause().then(() => {
             console.log('Paused!');
@@ -90,6 +86,19 @@ const PlayerSDK = (props) => {
         player.resume().then(() => {
             console.log('Resumed!');
           });
+    }
+    const nextSong = () =>{
+        console.log('NEXT event fired', activeOffset, tracks[activeOffset +1])
+        player.nextTrack().then(() => {
+            props.nextSong()
+            console.log('Skipped to next track!');
+          });
+
+    }
+    const previousSong = () =>{ 	
+        player.previousTrack().then(() => {
+            console.log('Set to previous track!');
+        });
     }
     const refHead = useRef()
     const refBody = useRef()
@@ -244,9 +253,9 @@ const PlayerSDK = (props) => {
             </div>
             <div className="player__buttons-main">
             <TiArrowRepeat size='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
-            <BsFillSkipBackwardFill className="next_btn scale_on" size='20'/>
+            <BsFillSkipBackwardFill className="next_btn scale_on" size='20' onClick ={previousSong}/>
             <button type="button" className="stop_btn scale_on" onClick={isPaused ? resumeTrack :stopTrack }> {isPaused? <VscDebugStart size='25'/> :<BsPauseFill size='25'/> }</button>
-            <div id='rotate_icon'><BsFillSkipBackwardFill size='20' className="next_btn scale_on"/> </div>
+            <div id='rotate_icon'><BsFillSkipBackwardFill size='20' className="next_btn scale_on" onClick={nextSong}/> </div>
             <TiArrowShuffle size ='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
             </div>
             <div className="player__buttons-volume" ref={refVolumeBody}>

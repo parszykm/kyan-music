@@ -16,6 +16,7 @@ const Dashboard = ({code}) => {
     const [profilePic,setProfilePic] =useState()
     const [profileName,setProfileName] =useState()
     const [tracks, setTracks] =useState([])
+    const [tracksUris, setTracksUris] = useState([])
     // const [favorites, setFavorites] = useState()
     useEffect(() => {
       if(!accessToken) return
@@ -42,7 +43,10 @@ const Dashboard = ({code}) => {
       axios.post('http://localhost:3001/search',{accessToken,search_value: e})
       .then(data => {
         setTracks(data.data)
+        let uris = JSON.stringify(data.data.map(item => item.uri))
+        setTracksUris(uris)
         console.log(data.data)
+        console.log("urisy elo",uris)
       })
       .catch(err => console.error(err))
 
@@ -55,6 +59,13 @@ const Dashboard = ({code}) => {
         console.log(track)
       
       }
+      let activeOffset = activeTrack.offset
+    const nextSong = () => {
+      console.log(tracks[activeOffset+1])
+      setActiveTrack(tracks[activeOffset+1])
+      activeOffset +=1
+      
+    }
 
     const [player, setPlayer] = useState(undefined);
     const [deviceID, setDeviceID] = useState(undefined);
@@ -110,14 +121,14 @@ const Dashboard = ({code}) => {
       </div>
       <div className="dashboard__dynamic-content">
               <Routes>
-        <Route path="/" element={<Home tracks={tracks} accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Route path="/" element={<Home tracks={tracks}  accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
-        <Route path="/favorites" element={<Favs accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Route path="/favorites" element={<Favs accessToken={accessToken} setUris={setTracksUris} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
       </Routes>
       </div>
 
       <div className="dashboard__content-player">
-        <PlayerSDK token={accessToken} uri={activeTrack.uri} id={activeTrackId} player={player} device_id={deviceID}/>
+        <PlayerSDK token={accessToken} nextSong = {nextSong} tracksUris={tracksUris} tracks={tracks} changeActive={changeActive} uri={activeTrack.uri} id={activeTrack.id} activeOffset={activeTrack.offset} player={player} device_id={deviceID} />
       </div>
       
       
@@ -128,7 +139,7 @@ const Dashboard = ({code}) => {
           <div>{code}<br/></div>
     <div><p>token <br/></p>{accessToken}</div>
     </div> */}
-    <Aside artist={activeTrack.artist} name={activeTrack.name} image={activeTrack.image_url}/>
+    <Aside artist={activeTrack.artist} name={activeTrack.track_name} image={activeTrack.image}/>
     </div>
     </Router>
   )

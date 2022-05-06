@@ -98,7 +98,7 @@ app.post('/search', (req,res) => {
     }).then(data => {
         const results =[]
         // console.log(data.data.tracks.items[0].album)
-        data.data.tracks.items.forEach((item) => {
+        data.data.tracks.items.forEach((item,index) => {
             results.push({
                 artist: item.artists[0].name,
                 key: item.id,
@@ -106,6 +106,7 @@ app.post('/search', (req,res) => {
                 image: item.album.images[0].url,
                 track_name: item.name,
                 album_name: item.album.name,
+                offset: index,
 
 
             })
@@ -139,8 +140,9 @@ app.post('/play', (req, res) => {
     const uri=req.body.uri
     const device_id=req.body.device_id
     const access_token=req.body.accessToken
-    console.log(uri)
-    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":[`${uri}`]},
+    const offset = req.body.activeOffset
+    console.log('uriki ',uri, offset)
+    axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":JSON.parse(uri), "offset": { "position": offset }, },
     {
         headers:{
             'Content-Type': 'application/json',
