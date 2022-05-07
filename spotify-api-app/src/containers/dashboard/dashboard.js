@@ -37,7 +37,7 @@ const Dashboard = ({code}) => {
     // }) 
     },[accessToken])
   
-
+    console.log('TRACKS',tracks)
     const searchTracks = (e) =>{
 
       axios.post('http://localhost:3001/search',{accessToken,search_value: e})
@@ -60,12 +60,18 @@ const Dashboard = ({code}) => {
       
       }
       let activeOffset = activeTrack.offset
-    const nextSong = () => {
-      console.log(tracks[activeOffset+1])
-      setActiveTrack(tracks[activeOffset+1])
-      activeOffset +=1
+    // const nextSong = () => {
+    //   console.log(tracks[activeOffset+1])
+    //   setActiveTrack(tracks[activeOffset+1])
+    //   activeOffset +=1
       
-    }
+    // }
+    // const prevSong = () => {
+    //   console.log(tracks[activeOffset-1])
+    //   setActiveTrack(tracks[activeOffset-1])
+    //   activeOffset -=1
+      
+    // }
 
     const [player, setPlayer] = useState(undefined);
     const [deviceID, setDeviceID] = useState(undefined);
@@ -128,7 +134,9 @@ const Dashboard = ({code}) => {
       </div>
 
       <div className="dashboard__content-player">
-        <PlayerSDK token={accessToken} nextSong = {nextSong} tracksUris={tracksUris} tracks={tracks} changeActive={changeActive} uri={activeTrack.uri} id={activeTrack.id} activeOffset={activeTrack.offset} player={player} device_id={deviceID} />
+        <PlayerSDK token={accessToken} 
+        // nextSong = {nextSong} prevSong={prevSong} 
+        tracksUris={tracksUris} tracks={tracks} changeActive={changeActive} uri={activeTrack.uri} id={activeTrack.id} activeOffset={activeTrack.offset} player={player} device_id={deviceID} />
       </div>
       
       

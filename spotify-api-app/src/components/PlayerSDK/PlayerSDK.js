@@ -10,8 +10,13 @@ import {MdOutlineOpenInFull} from 'react-icons/md'
 import {VscDebugStart} from 'react-icons/vsc'
 const PlayerSDK = (props) => {
     let myInterval = 0
+    // console.log('PLAYER TRACKS', props.tracks)
     // const [player, setPlayer] = useState(undefined);
     // const [deviceID, setDeviceID] = useState(undefined);
+    // const [tracks, setTracks] = useState(props.tracks);
+    // console.log('PLAYER TRACKS', props.tracks, tracks)
+    // useEffect(() => {setTracks(props.tracks);},[props.tracks])
+    // const tracks = props.tracks
     const player = props.player
     const deviceID = props.device_id
     const [isPaused,setIsPaused] = useState(true);
@@ -21,6 +26,8 @@ const PlayerSDK = (props) => {
     const progressBar = document.querySelector('.progress_bar')
     const accessToken = props.token
 
+  
+
     function myStopFunction() {
         clearInterval(myInterval);
       }
@@ -29,6 +36,20 @@ const PlayerSDK = (props) => {
         player.addListener('player_state_changed',(e) => {
         setIsPaused(e.paused)
         })
+        player.addListener('player_state_changed', ({
+            position,
+            duration,
+            track_window: { current_track }
+          }) => {
+                if(props.tracks != 0)
+                {
+                    var temp_track = props.tracks.find(track => track.uri == current_track.uri)
+                    // console.log(temp_track, props.uri, props.tracks)
+                    if (temp_track.uri != props.uri){
+                    props.changeActive(temp_track)
+                    }
+                }
+          });
     
     },[player])
     useEffect(() => {
@@ -75,7 +96,7 @@ const PlayerSDK = (props) => {
         })
     },[props.uri])
     const [activeOffset,setActiveOffset] = useState(props.activeOffset)
-    const tracks = props.tracks
+    
     const stopTrack = () =>{
         player.pause().then(() => {
             console.log('Paused!');
@@ -88,15 +109,16 @@ const PlayerSDK = (props) => {
           });
     }
     const nextSong = () =>{
-        console.log('NEXT event fired', activeOffset, tracks[activeOffset +1])
+        console.log('NEXT event fired', activeOffset, props.tracks[activeOffset +1])
         player.nextTrack().then(() => {
-            props.nextSong()
+            //props.nextSong()
             console.log('Skipped to next track!');
           });
 
     }
     const previousSong = () =>{ 	
         player.previousTrack().then(() => {
+            //props.prevSong();
             console.log('Set to previous track!');
         });
     }
