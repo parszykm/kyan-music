@@ -10,6 +10,9 @@ const Favs = (props) => {
     if(!accessToken) return
     axios.post('http://localhost:3001/favorites',{accessToken: accessToken}).then((res) => {
     setFavorites(res.data)
+    props.setTracks(res.data)
+    let uris = JSON.stringify(res.data.map(item => item.uri))
+    props.setUris(uris)
     console.log('favs init')
   // console.log(res.data)
   }) 

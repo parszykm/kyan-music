@@ -14,8 +14,10 @@ const PlayerSDK = (props) => {
     // const [player, setPlayer] = useState(undefined);
     // const [deviceID, setDeviceID] = useState(undefined);
     // const [tracks, setTracks] = useState(props.tracks);
-    // console.log('PLAYER TRACKS', props.tracks, tracks)
-    // useEffect(() => {setTracks(props.tracks);},[props.tracks])
+    const tracks = useRef(props.tracks)
+    // const tracks = props.tracks
+    console.log('PLAYER TRACKS', props.tracks, tracks.current);
+    // useEffect(() => {setXtracks(props.tracks);},[])
     // const tracks = props.tracks
     const player = props.player
     const deviceID = props.device_id
@@ -26,32 +28,54 @@ const PlayerSDK = (props) => {
     const progressBar = document.querySelector('.progress_bar')
     const accessToken = props.token
 
-  
-
     function myStopFunction() {
         clearInterval(myInterval);
       }
-    useEffect(() =>{
-        if(!player) return
-        player.addListener('player_state_changed',(e) => {
-        setIsPaused(e.paused)
-        })
-        player.addListener('player_state_changed', ({
-            position,
-            duration,
-            track_window: { current_track }
-          }) => {
-                if(props.tracks != 0)
+    function LookForActive(current_track){
+        // var tracks=props.tracks
+        console.log('TRACKS W FUN',tracks.current)
+                if(tracks.current != 0)
                 {
-                    var temp_track = props.tracks.find(track => track.uri == current_track.uri)
+                    console.log('pierwszy if')
+                    var temp_track = tracks.current.find(track => track.uri == current_track.uri)
+                    if (temp_track == null) return
                     // console.log(temp_track, props.uri, props.tracks)
                     if (temp_track.uri != props.uri){
+                    console.log('drugi if')
                     props.changeActive(temp_track)
                     }
                 }
-          });
+                else{
+                    console.log('cos innego')
+                }
+
+    }
+    // useEffect(() => {console.log('new tracks')
+    //     setTracks(props.tracks)},[props.tracks])
+    useEffect(() => {tracks.current = props.tracks},[props.tracks])
+    useEffect(() =>{
+        if(!player) return
+        player.addListener('player_state_changed', ({
+            paused,
+          }) => {
+              setIsPaused(paused)
+          }
+          );
     
     },[player])
+    useEffect(() =>{
+        if (!player) return
+        console.log('TRACKS CHange', tracks.current)
+        player.addListener('player_state_changed', ({
+
+            track_window: { current_track },
+          }) => {
+              console.log('TRACKS W EVENCIE', tracks.current)
+              LookForActive(current_track)
+          }
+          );
+
+    },[tracks.current])
     useEffect(() => {
 
         if(!player || player == null) return

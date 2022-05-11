@@ -129,7 +129,7 @@ const Dashboard = ({code}) => {
               <Routes>
         <Route path="/" element={<Home tracks={tracks}  accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
         <Route path="/trends" element={<Trends/>}></Route>
-        <Route path="/favorites" element={<Favs accessToken={accessToken} setUris={setTracksUris} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Route path="/favorites" element={<Favs accessToken={accessToken} setUris={setTracksUris} setTracks={setTracks} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
       </Routes>
       </div>
 
