@@ -107,6 +107,7 @@ app.post('/search', (req,res) => {
                 track_name: item.name,
                 album_name: item.album.name,
                 offset: index,
+                time: new Date(parseInt(item.duration_ms)).toISOString().slice(14,19),
 
 
             })
@@ -211,6 +212,7 @@ app.post('/favorites', (req, res) => {
                 track_name: item.track.name,
                 album_name: item.track.album.name,
                 offset: index,
+                time: new Date(parseInt(item.track.duration_ms)).toISOString().slice(14,19) 
 
 
 

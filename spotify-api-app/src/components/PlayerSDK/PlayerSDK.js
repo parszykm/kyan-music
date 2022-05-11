@@ -16,7 +16,6 @@ const PlayerSDK = (props) => {
     // const [tracks, setTracks] = useState(props.tracks);
     const tracks = useRef(props.tracks)
     // const tracks = props.tracks
-    console.log('PLAYER TRACKS', props.tracks, tracks.current);
     // useEffect(() => {setXtracks(props.tracks);},[])
     // const tracks = props.tracks
     const player = props.player
@@ -31,17 +30,19 @@ const PlayerSDK = (props) => {
     function myStopFunction() {
         clearInterval(myInterval);
       }
-    function LookForActive(current_track){
+    async function LookForActive(current_track){
         // var tracks=props.tracks
-        console.log('TRACKS W FUN',tracks.current)
+        // console.log('TRACKS W FUN',tracks.current)
                 if(tracks.current != 0)
                 {
-                    console.log('pierwszy if')
-                    var temp_track = tracks.current.find(track => track.uri == current_track.uri)
-                    if (temp_track == null) return
+                    
+                    // var temp_track = await tracks.current.find(track => track.uri == current_track.uri)
+                    var temp_track = await tracks.current.find((track) => (track.track_name == current_track.name && track.album_name == current_track.album.name))
+                    if (temp_track == null) {console.log('TO JEST TEN ERROR?', tracks.current, current_track, temp_track) 
+                    return}
                     // console.log(temp_track, props.uri, props.tracks)
-                    if (temp_track.uri != props.uri){
-                    console.log('drugi if')
+                    if (temp_track.trac_name != props.name){
+                
                     props.changeActive(temp_track)
                     }
                 }
@@ -65,12 +66,12 @@ const PlayerSDK = (props) => {
     },[player])
     useEffect(() =>{
         if (!player) return
-        console.log('TRACKS CHange', tracks.current)
+        // console.log('TRACKS CHange', tracks.current)
         player.addListener('player_state_changed', ({
 
             track_window: { current_track },
           }) => {
-              console.log('TRACKS W EVENCIE', tracks.current)
+            //   console.log('TRACKS W EVENCIE', tracks.current)
               LookForActive(current_track)
           }
           );
@@ -279,7 +280,17 @@ const PlayerSDK = (props) => {
     // refBody.current.addEventListener('mousemove',touchMove)
     // playerCont.addEventListener('mouseleave',touchEnd)
     const addToFav = () =>{
-        axios.post('http://localhost:3001/add',{accessToken: accessToken, id: props.id})
+        
+        player.getCurrentState().then(state => {
+            if (!state) {
+              console.error('User is not playing music through the Web Playback SDK');
+              return;
+            }  
+            var current_track = state.track_window.current_track;
+            console.log(current_track.id)
+            axios.post('http://localhost:3001/add',{accessToken: accessToken, id: current_track.id})
+          });
+
     }
   return (
     <>

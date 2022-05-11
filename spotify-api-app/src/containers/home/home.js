@@ -10,7 +10,7 @@ const Home = (props) => {
       
       {props.tracks.map((item,index) => (
         
-        <Track isActive={props.changeActive} isActiveId={props.changeActiveId} state={props.activeTrack === item.uri?1:0} key={index} id={index} name={item.track_name} artist={item.artist} time='1:28' album={item.album_name} uri={item.uri} track_id={item.key} image={item.image}/>
+        <Track isActive={props.changeActive} isActiveId={props.changeActiveId} state={props.activeTrack === item.uri?1:0} key={index} id={index} name={item.track_name} artist={item.artist} album={item.album_name} uri={item.uri} track_id={item.key} image={item.image} time={item.time}/>
         
       ))}
     </div>
