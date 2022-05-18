@@ -4,7 +4,7 @@ import useAuth from '../../useAuth'
 import Sidebar from '../Sidebar/Sidebar'
 import Aside from '../Aside/Aside'
 import {useState,useEffect,useRef} from 'react'
-import { BrowserRouter as Router, Route,Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route,Routes, useNavigate, useLocation} from 'react-router-dom'
 import Home from '../home/home'
 import Trends from '../trends/Trends'
 import PlayerSDK from'../../components/PlayerSDK/PlayerSDK'
@@ -28,25 +28,27 @@ const Dashboard = ({code}) => {
       }).catch(err => {console.error(err)})
       console.log(profileName)
 
-      
-  
-    //   axios.post('http://localhost:3001/favorites',{accessToken: accessToken}).then((res) => {
-    //   setFavorites(res.data)
-    //   console.log('favs init')
-    // // console.log(res.data)
-    // }) 
     },[accessToken])
   
     // console.log('TRACKS',tracks)
+    const navigate = useNavigate();
+    const location = useLocation();
     const searchTracks = (e) =>{
+      setActiveTrack(true)
 
+      
       axios.post('http://localhost:3001/search',{accessToken,search_value: e})
       .then(data => {
         setTracks(data.data)
         let uris = JSON.stringify(data.data.map(item => item.uri))
         setTracksUris(uris)
         console.log(data.data)
-        console.log("urisy elo",uris)
+        let basePath = location.pathname;
+        const newPath = `${basePath}/search`
+        if (newPath !== location.pathname) {
+          navigate('/search')
+      }
+  
       })
       .catch(err => console.error(err))
 
@@ -56,22 +58,11 @@ const Dashboard = ({code}) => {
       const changeActive = (track) =>{
         setActiveTrack(track)
         
-        console.log(track)
+        // console.log(track)
       
       }
       let activeOffset = activeTrack.offset
-    // const nextSong = () => {
-    //   console.log(tracks[activeOffset+1])
-    //   setActiveTrack(tracks[activeOffset+1])
-    //   activeOffset +=1
-      
-    // }
-    // const prevSong = () => {
-    //   console.log(tracks[activeOffset-1])
-    //   setActiveTrack(tracks[activeOffset-1])
-    //   activeOffset -=1
-      
-    // }
+
 
     const [player, setPlayer] = useState(undefined);
     const [deviceID, setDeviceID] = useState(undefined);
@@ -109,7 +100,6 @@ const Dashboard = ({code}) => {
   
     
   return (
-  <Router>
     <div className="dashboard">
     <Sidebar profilePic={profilePic} name={profileName}/>
     <div className="dashboard__content">
@@ -121,15 +111,17 @@ const Dashboard = ({code}) => {
         
         <div className="dashboard__content-input-search_bar">
           <BiSearch/>
-          <input type="search" placeholder="Search for tracks..." onKeyUp={e => (e.key === 'Enter' ? searchTracks(e.target.value) : () => {} )}></input>
+         <input type="search" placeholder="Search for tracks..." onKeyUp={e => (e.key === 'Enter' ? searchTracks(e.target.value) : () => {} )}></input>
         </div>
 
       </div>
       <div className="dashboard__dynamic-content">
-              <Routes>
-        <Route path="/" element={<Home tracks={tracks}  accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Routes>
+        
+        <Route path="/search" element={<Home tracks={tracks}  accessToken={accessToken} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Route path='/' element={<Trends/>} />
         <Route path="/trends" element={<Trends/>}></Route>
-        <Route path="/favorites" element={<Favs accessToken={accessToken} setUris={setTracksUris} setTracks={setTracks} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri}/>}></Route>
+        <Route path="/favorites" element={<Favs accessToken={accessToken} setUris={setTracksUris} setTracks={setTracks} changeActive={changeActive} changeActiveId={setActiveTrackId} activeTrack={activeTrack.uri} />}></Route>
       </Routes>
       </div>
 
@@ -149,7 +141,7 @@ const Dashboard = ({code}) => {
     </div> */}
     <Aside artist={activeTrack.artist} name={activeTrack.track_name} image={activeTrack.image}/>
     </div>
-    </Router>
+
   )
 }
 

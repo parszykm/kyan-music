@@ -147,6 +147,53 @@ const PlayerSDK = (props) => {
             console.log('Set to previous track!');
         });
     }
+    const [shuffleActive, setShuffleActive] = useState(false)
+    const ShuffleOn = () =>{
+        console.log('Set to shuffle track!')
+        player.getCurrentState().then(state => {
+            if (!state) {
+              console.error('User is not playing music through the Web Playback SDK');
+              return;
+            }
+            console.log('Shuffle', state.shuffle);
+          });
+        axios.post('http://localhost:3001/shuffle',{accessToken: accessToken, state: true, device: deviceID }).then(()=>{
+            console.log('Shuffle turned on')
+            setShuffleActive(true)
+            player.getCurrentState().then(state => {
+                if (!state) {
+                  console.error('User is not playing music through the Web Playback SDK');
+                  return;
+                }
+              
+                var current_track = state.track_window.current_track;
+                var next_track = state.track_window.next_tracks[0];
+              
+                console.log('Currently Playing', current_track);
+                console.log('Playing Next', next_track);
+                console.log('Shuffle', state.shuffle);
+              });
+        })
+    }
+    const ShuffleOff = () =>{
+        axios.post('http://localhost:3001/shuffle',{accessToken: accessToken, state: false, device: deviceID }).then(()=>{
+            console.log('Shuffle turned off')
+            setShuffleActive(false)
+            player.getCurrentState().then(state => {
+                if (!state) {
+                  console.error('User is not playing music through the Web Playback SDK');
+                  return;
+                }
+              
+                var current_track = state.track_window.current_track;
+                var next_track = state.track_window.next_tracks[0];
+              
+                console.log('Currently Playing', current_track);
+                console.log('Playing Next', next_track);
+                console.log('Shuffle', state.shuffle);
+              });
+        })
+    } 
     const refHead = useRef()
     const refBody = useRef()
     const refBar = useRef()
@@ -292,6 +339,7 @@ const PlayerSDK = (props) => {
           });
 
     }
+  
   return (
     <>
         <div className="player" ref={refBody} >
@@ -309,11 +357,11 @@ const PlayerSDK = (props) => {
 
             </div>
             <div className="player__buttons-main">
-            <TiArrowRepeat size='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
+            <TiArrowRepeat size={!shuffleActive ? '22':'18'} className="scale_on" onClick={ShuffleOff} style={{color: shuffleActive ? 'var(--font-gray)':'var(--purple-color)'}}/>
             <BsFillSkipBackwardFill className="next_btn scale_on" size='20' onClick ={previousSong}/>
             <button type="button" className="stop_btn scale_on" onClick={isPaused ? resumeTrack :stopTrack }> {isPaused? <VscDebugStart size='25'/> :<BsPauseFill size='25'/> }</button>
             <div id='rotate_icon'><BsFillSkipBackwardFill size='20' className="next_btn scale_on" onClick={nextSong}/> </div>
-            <TiArrowShuffle size ='18' className="scale_on" style={{color:'var(--font-gray)'}}/>
+            <TiArrowShuffle size = {shuffleActive ? '22':'18'} className="scale_on" onClick = {ShuffleOn} style={{color: !shuffleActive ? 'var(--font-gray)':'var(--purple-color)'}}/>
             </div>
             <div className="player__buttons-volume" ref={refVolumeBody}>
             <BiVolumeLow size='20' style={{color:'var(--font-gray)'}}/>

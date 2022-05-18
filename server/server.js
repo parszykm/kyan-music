@@ -124,7 +124,6 @@ app.post('/play', (req, res) => {
     const device_id=req.body.device_id
     const access_token=req.body.accessToken
     const offset = req.body.activeOffset
-    console.log('uriki ',uri, offset)
     axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,{"uris":JSON.parse(uri), "offset": { "position": offset }, },
     {
         headers:{
@@ -199,7 +198,7 @@ app.post('/favorites', (req, res) => {
     }
     }).then(async (data) =>{
         
-        console.log(data.data.items.length)
+        // console.log(data.data.items.length)
         var offset = data.data.items.length
         var total = data.data.total
 
@@ -224,7 +223,7 @@ app.post('/favorites', (req, res) => {
     while(offset < total)
     {
       
-        console.log(offset,total)
+        // console.log(offset,total)
         await axios.get(`https://api.spotify.com/v1/me/tracks?limit=50&offset=${offset}`,{ 
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
@@ -253,5 +252,17 @@ app.post('/favorites', (req, res) => {
         console.log(err)
         res.sendStatus(400)
     })
+})
+app.post('/shuffle', (req, res) => {
+    const accessToken = req.body.accessToken
+    const state = req.body.state
+    const deviceID=req.body.device
+    axios.put(`https://api.spotify.com/v1/me/player/shuffle?device_id=${deviceID}&state=${state}`,{}, {
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+    }
+    }).then(res.sendStatus(200)).catch(err => console.log(err))
+
 })
 app.listen(3001)
